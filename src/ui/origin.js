@@ -3,11 +3,6 @@ import { h } from '../engine/dom.js';
 
 const redactLine = (text) => text.replace(/[^\s]/g, '█');
 
-/**
- * THE_ORIGIN: the archive's fictional history, assembled from fragments the
- * visitor has found elsewhere. Missing fragments stay redacted, so visiting
- * early is never a dead end. It just shows how much is still unread.
- */
 export function mountOrigin(container, ctx) {
   const { store } = ctx;
   store.dispatch({ type: 'achievement/award', id: 'origin_seen' });

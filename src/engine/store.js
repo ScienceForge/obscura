@@ -19,12 +19,6 @@ const randomHex = () =>
     .toUpperCase()
     .padStart(4, '0');
 
-/**
- * Holds visitor progress, persists it locally, and tells listeners about
- * events worth announcing (discoveries, fragments, achievements).
- *
- * @param {{ backend?: Storage | null, now?: () => Date, createId?: () => string }} [options]
- */
 export function createProgressStore({ backend = browserStorage(), now = () => new Date(), createId = randomHex } = {}) {
   const persistent = backend !== null;
   const memory = new Map();
@@ -83,7 +77,6 @@ export function createProgressStore({ backend = browserStorage(), now = () => ne
       return writeFailed;
     },
     get: () => state,
-    /** Apply an action; returns the events it produced. */
     dispatch(action) {
       const result = apply(state, action, now());
       return commit(result.progress, result.events);

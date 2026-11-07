@@ -5,12 +5,6 @@ import {
   FRAGMENT_INDEX,
 } from './catalog.js';
 
-/**
- * Visitor progress, as pure functions. `apply` takes a progress object and an
- * action and returns the new progress plus a list of events (things worth
- * telling the visitor about). Nothing here touches storage or the DOM.
- */
-
 export const PROGRESS_VERSION = 1;
 export const HISTORY_LIMIT = 200;
 
@@ -37,7 +31,6 @@ function record(progress, now, type, ref) {
   return { ...progress, history: history.slice(-HISTORY_LIMIT) };
 }
 
-/** Award any rule-based achievements newly satisfied. */
 function awardRules(progress, now, events) {
   let next = progress;
   for (const achievement of ACHIEVEMENTS) {
@@ -50,12 +43,6 @@ function awardRules(progress, now, events) {
   return next;
 }
 
-/**
- * @param {object} progress
- * @param {{ type: string, [key: string]: any }} action
- * @param {Date} [now]
- * @returns {{ progress: object, events: Array<{ type: string, id: string }> }}
- */
 export function apply(progress, action, now = new Date()) {
   const events = [];
   let next = progress;
@@ -118,7 +105,6 @@ export function apply(progress, action, now = new Date()) {
   return { progress: next, events };
 }
 
-/** Wipe discoveries but keep who the visitor is and their sound preference. */
 export function resetProgress(progress, now = new Date()) {
   return {
     ...createProgress({ now, visitorId: progress.visitorId.replace(/^V-/, '') }),
@@ -138,7 +124,6 @@ function cleanTimestamps(raw, allowed) {
   return out;
 }
 
-/** Turn untrusted stored data into valid progress. */
 export function normalizeProgress(raw, fallback) {
   if (!isRecord(raw)) return fallback;
   const base = fallback;

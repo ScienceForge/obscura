@@ -25,17 +25,11 @@ function writeStamps(stamps) {
   try {
     localStorage.setItem(RATE_KEY, JSON.stringify(stamps));
   } catch {
-    /* rate limiting is best-effort */
   }
 }
 
 const dateFormat = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
 
-/**
- * The transmit screen. Nothing typed here is sent anywhere by this site.
- * A valid transmission becomes a prefilled GitHub issue that the visitor
- * submits themselves, and a person reviews it before anything is public.
- */
 export function mountSubmit(container, ctx) {
   let startedAt = Date.now();
   let prepared = null;
@@ -43,7 +37,6 @@ export function mountSubmit(container, ctx) {
   const root = h('section', { class: 'submit' });
   container.append(root);
 
-  /* ---------------------------------------------------------------- form */
   const fields = {};
   function field(name, label, control, { hint = '', required = false } = {}) {
     const id = uid(`f-${name}`);
@@ -71,13 +64,11 @@ export function mountSubmit(container, ctx) {
   fields.permission = { control: permissionBox, error: permissionError };
   const permission = h('div', { class: 'form__field form__check' }, h('div', {}, permissionBox, h('label', { for: permissionId }, 'I made this, or I have permission to share it, and I am happy for it to appear in the archive if it is approved.')), permissionError);
 
-  // A field only a bot fills in. Hidden from people and from assistive technology.
   const trap = h('div', { class: 'form__trap', 'aria-hidden': 'true' }, h('label', {}, 'Leave this empty', h('input', { name: 'website', type: 'text', tabindex: '-1', autocomplete: 'off' })));
 
   const summary = h('p', { class: 'form__summary', role: 'alert', hidden: true });
   const form = h('form', { class: 'form', novalidate: true, onsubmit: onSubmit }, title, category, url, description, creator, contact, permission, trap, summary, h('button', { class: 'btn', type: 'submit' }, 'Prepare transmission'));
 
-  /* ------------------------------------------------------------- behaviour */
   function showErrors(errors) {
     let first = null;
     for (const [name, f] of Object.entries(fields)) {
@@ -121,7 +112,6 @@ export function mountSubmit(container, ctx) {
     renderReview();
   }
 
-  /* --------------------------------------------------------------- review */
   function renderReview() {
     const link = buildIssueUrl(prepared, GITHUB_REPO);
     const status = h('p', { class: 'review__status', role: 'status', 'aria-live': 'polite' });
@@ -159,7 +149,6 @@ export function mountSubmit(container, ctx) {
     root.querySelector('.review__title').focus({ preventScroll: true });
   }
 
-  /* ------------------------------------------------------------- approved */
   const approved = h('section', { class: 'approved', 'aria-labelledby': 'approved-title' }, h('h2', { class: 'approved__title', id: 'approved-title' }, 'Approved transmissions'), h('p', { class: 'approved__state', role: 'status' }, 'Listening…'));
 
   async function loadApproved() {

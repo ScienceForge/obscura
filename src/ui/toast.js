@@ -1,19 +1,11 @@
 import { h } from '../engine/dom.js';
 import { corruptInto, resolveInto } from '../engine/scramble.js';
 
-/**
- * Notifications are signals that tear in out of static and decay back into it.
- * The visible text is animated and hidden from assistive technology; a clean
- * copy is what screen readers get, so nobody hears the noise.
- */
 export function createToaster(parent) {
   const region = h('div', { class: 'toasts', role: 'status', 'aria-live': 'polite', 'aria-atomic': 'false' });
   parent.append(region);
 
   return {
-    /**
-     * @param {{ kind?: 'entry'|'complete'|'fragment'|'achievement'|'info', label: string, title: string, detail?: string, duration?: number }} options
-     */
     show({ kind = 'info', label, title, detail = '', duration = 5600 }) {
       const labelEl = h('span', { class: 'toast__label', 'aria-hidden': 'true' });
       const titleEl = h('span', { class: 'toast__title', 'aria-hidden': 'true' });

@@ -1,6 +1,5 @@
 const query = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-/** True when the visitor has asked their system for less motion. */
 export const reducedMotion = () => query.matches;
 
 export const sleep = (ms, signal) =>
@@ -13,11 +12,6 @@ export const sleep = (ms, signal) =>
     }, { once: true });
   });
 
-/**
- * Type text into an element one character at a time. Resolves when finished
- * or aborted; under reduced motion the whole text appears at once. The
- * element always ends up holding the complete text.
- */
 export async function typeInto(el, text, { speed = 28, signal } = {}) {
   if (reducedMotion() || speed <= 0) {
     el.textContent = text;

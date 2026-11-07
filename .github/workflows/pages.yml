@@ -37,7 +37,6 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          # Submissions open as issues on this repository.
           VITE_GITHUB_REPO: ${{ github.repository }}
       - uses: actions/upload-pages-artifact@v3
         with:

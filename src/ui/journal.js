@@ -14,7 +14,6 @@ function describe(item) {
   }
 }
 
-/** The visitor's personal record: history, fragments, achievements, reset. */
 export function mountJournal(container, ctx) {
   const { store } = ctx;
   let confirming = false;

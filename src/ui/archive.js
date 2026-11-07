@@ -16,7 +16,6 @@ export function mountArchive(container, ctx) {
   let selectedId = null;
   let destroyed = false;
 
-  /* ------------------------------------------------------------ skeleton */
   const title = h('h1', { class: 'archive__title', tabindex: '-1' }, 'The Archive');
   const list = h('ul', { class: 'index', role: 'list' });
   const plate = h('canvas', { class: 'specimen__plate', width: 320, height: 200, 'aria-hidden': 'true' });
@@ -49,7 +48,6 @@ export function mountArchive(container, ctx) {
   );
   container.append(root);
 
-  /* ---------------------------------------------------------------- list */
   function statusOf(progress, entry) {
     const status = entryStatus(progress, entry);
     if (status === 'open' && progress.discovered[entry.id]) return 'explored';
@@ -117,7 +115,6 @@ export function mountArchive(container, ctx) {
     }
   }
 
-  /* ------------------------------------------------------------- console */
   function say(text, kind = 'out') {
     output.append(h('p', { class: `console__line is-${kind}` }, text));
     while (output.children.length > 9) output.firstElementChild.remove();
@@ -221,7 +218,6 @@ export function mountArchive(container, ctx) {
     }
   }
 
-  /* ----------------------------------------------------------- keyboard */
   const detector = createSequenceDetector(Object.keys(SECRET_SEQUENCES));
   const typing = (target) => target instanceof HTMLElement && (target.matches('input, textarea, select') || target.isContentEditable);
 
@@ -248,7 +244,6 @@ export function mountArchive(container, ctx) {
   }
   window.addEventListener('keydown', onKey);
 
-  /* Rows lean slightly toward the pointer. */
   let frame = 0;
   function onPointerMove(event) {
     if (reducedMotion() || event.pointerType !== 'mouse' || frame) return;
@@ -265,7 +260,6 @@ export function mountArchive(container, ctx) {
   list.addEventListener('pointermove', onPointerMove);
   list.addEventListener('pointerleave', onPointerLeave);
 
-  /* The rows are watching. Each eye turns toward the pointer. */
   let eyeFrame = 0;
   let lastPoint = { x: window.innerWidth / 2, y: window.innerHeight / 3 };
   function lookAt() {
@@ -286,7 +280,6 @@ export function mountArchive(container, ctx) {
   };
   window.addEventListener('pointermove', onLook, { passive: true });
 
-  /* Now and then, a title corrupts and then recovers. */
   let glitchTimer = 0;
   function scheduleGlitch() {
     glitchTimer = window.setTimeout(() => {
@@ -309,7 +302,6 @@ export function mountArchive(container, ctx) {
   renderList();
   say('Type help for commands, or choose an entry above.', 'dim');
 
-  // If nobody touches anything for a while, the archive notices.
   const idleLines = ['Still there?', 'The archive is listening.', 'Nothing has moved. Something has noticed.'];
   let idleCount = 0;
   let idleTimer = 0;

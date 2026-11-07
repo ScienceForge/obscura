@@ -1,13 +1,3 @@
-/**
- * Community submissions. The site is static, so there is no server to receive
- * a submission. Instead a validated submission becomes a *prefilled GitHub
- * issue* that the visitor must submit themselves; a person reviews it, and
- * only approved entries are ever added to public/community.json.
- *
- * Nothing in this module sends data anywhere. It validates, cleans and
- * formats.
- */
-
 export const CATEGORIES = ['Interactive visual', 'Audio', 'Puzzle or game', 'Narrative', 'Tool or utility', 'Other'];
 
 export const LIMITS = {
@@ -24,12 +14,9 @@ export const SPAM = {
   windowMs: 24 * 60 * 60 * 1000,
 };
 
-/* eslint-disable no-control-regex */
 const CONTROL = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g;
-/** Zero-width characters and bidirectional overrides, used to disguise text. */
 const INVISIBLE = /[​-‏‪-‮⁠-⁯﻿]/g;
 
-/** Clean untrusted text. Single-line values lose their line breaks. */
 export function sanitizeText(value, { multiline = false } = {}) {
   let text = String(value ?? '').normalize('NFC').replace(/\r\n?/g, '\n').replace(CONTROL, '').replace(INVISIBLE, '');
   text = multiline ? text.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n') : text.replace(/\s+/g, ' ');
@@ -38,11 +25,6 @@ export function sanitizeText(value, { multiline = false } = {}) {
 
 const PRIVATE_HOST = /^(?:localhost|.*\.(?:local|localhost|internal|lan|home|test|invalid))$/i;
 
-/**
- * Accept only public https links. No credentials, no raw IP addresses, no
- * local or internal hosts, and no other schemes (javascript:, data:, file:…).
- * @returns {{ ok: true, url: string } | { ok: false, error: string }}
- */
 export function validateUrl(text, { max = LIMITS.url.max } = {}) {
   const raw = String(text ?? '').trim();
   if (!raw) return { ok: false, error: 'Enter the link to your experience.' };
@@ -67,15 +49,7 @@ export function validateUrl(text, { max = LIMITS.url.max } = {}) {
   return { ok: true, url: url.href };
 }
 
-/**
- * Validate and clean a submission.
- *
- * @param {Record<string, string>} input raw field values, including the hidden `website` honeypot
- * @param {{ elapsedMs?: number }} [context]
- * @returns {{ ok: true, value: object } | { ok: false, spam?: boolean, errors: Record<string, string> }}
- */
 export function validateSubmission(input, { elapsedMs = Infinity } = {}) {
-  // Spam checks come first and are deliberately vague: a bot learns nothing.
   if (String(input.website ?? '').trim() !== '' || elapsedMs < SPAM.minFillMs) {
     return { ok: false, spam: true, errors: {} };
   }
@@ -109,13 +83,6 @@ export function validateSubmission(input, { elapsedMs = Infinity } = {}) {
   return { ok: true, value: { title, category: input.category, url: link.url, description, creator, contact } };
 }
 
-/* ------------------------------------------------------------ rate limit */
-
-/**
- * Limit how many transmissions one browser prepares per day. This only stops
- * accidents and casual repetition; the real barrier is that GitHub requires an
- * account and a human reviews everything.
- */
 export function checkRateLimit(timestamps, now = Date.now(), { max = SPAM.maxPerWindow, windowMs = SPAM.windowMs } = {}) {
   const recent = timestamps.filter((t) => Number.isFinite(t) && now - t < windowMs && t <= now);
   if (recent.length < max) return { allowed: true, remaining: max - recent.length };
@@ -127,11 +94,8 @@ export function recordSubmission(timestamps, now = Date.now(), windowMs = SPAM.w
   return [...timestamps.filter((t) => Number.isFinite(t) && now - t < windowMs), now];
 }
 
-/* ------------------------------------------------------------ GitHub issue */
-
 export const REPO_PATTERN = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 
-/** Build a prefilled "new issue" link for the repository's submission form, or null if unconfigured. */
 export function buildIssueUrl(value, repo) {
   if (typeof repo !== 'string' || !REPO_PATTERN.test(repo)) return null;
   const params = new URLSearchParams({
@@ -146,7 +110,6 @@ export function buildIssueUrl(value, repo) {
   return `https://github.com/${repo}/issues/new?${params.toString()}`;
 }
 
-/** Plain-text version, for copying when GitHub is not an option. */
 export function formatSubmission(value) {
   return [
     `Title: ${value.title}`,
@@ -159,9 +122,6 @@ export function formatSubmission(value) {
   ].join('\n');
 }
 
-/* ------------------------------------------------------ approved entries */
-
-/** Is this entry in community.json safe and well-formed enough to display? */
 export function isValidCommunityEntry(entry) {
   if (!entry || typeof entry !== 'object') return false;
   const { title, description, url, category, addedAt, creator } = entry;

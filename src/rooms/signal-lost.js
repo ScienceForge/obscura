@@ -4,12 +4,6 @@ import { reducedMotion } from '../engine/motion.js';
 
 const STATIC = '█▓▒░#%&?/\\|';
 
-/**
- * Room 002: Signal Lost. Three transmissions are arriving, scrambled.
- * The first two are tuned with a dial (and a phase switch); the third is
- * locked with a word. Signal strength rises as the settings get closer, and
- * the text only becomes stable when it is exactly right.
- */
 export function mount(container, ctx) {
   const wasCompleted = Boolean(ctx.store.get().completed['OBS-0002']);
   const solved = new Set();
@@ -22,7 +16,6 @@ export function mount(container, ctx) {
 
   const unlocked = (index) => wasCompleted || index === 0 || TRANSMISSIONS.slice(0, index).every((t) => solved.has(t.id));
 
-  /* ------------------------------------------------------------- elements */
   const scope = h('canvas', { class: 'signal__scope', 'aria-hidden': 'true' });
   const tabs = h('div', { class: 'signal__tabs', role: 'tablist', 'aria-label': 'Transmissions' });
   const tabButtons = TRANSMISSIONS.map((t, index) =>
@@ -65,7 +58,6 @@ export function mount(container, ctx) {
       h('div', { class: 'signal__buttons' }, hintButton, revealButton), hints, finale, status));
   container.append(root);
 
-  /* ------------------------------------------------------------- behaviour */
   function renderTabs() {
     TRANSMISSIONS.forEach((t, index) => {
       const open = unlocked(index);
@@ -116,7 +108,6 @@ export function mount(container, ctx) {
     select(current);
   }
 
-  /** Recompute what is on screen and whether this transmission is now solved. */
   function refresh() {
     const t = TRANSMISSIONS[current];
     const a = attempts[current];
@@ -162,7 +153,6 @@ export function mount(container, ctx) {
     }
   }
 
-  /* ---------------------------------------------------------------- scope */
   let phase = 0;
   const stop = loop((dt) => {
     phase += dt * (1 + strength * 3);

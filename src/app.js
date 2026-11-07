@@ -50,7 +50,6 @@ export function startApp(root) {
     },
   };
 
-  /* ------------------------------------------------------ notifications */
   store.onEvent((event) => {
     switch (event.type) {
       case 'entry': {
@@ -79,11 +78,9 @@ export function startApp(root) {
     }
   });
 
-  /* ------------------------------------------------------------- views */
   let current = null;
   let token = 0;
 
-  /** Decide what to show for a route, loading code if needed. */
   async function resolve(match) {
     switch (match.view) {
       case 'home':
@@ -151,10 +148,8 @@ export function startApp(root) {
 
   window.addEventListener('hashchange', route);
 
-  /* -------------------------------------------------------------- boot */
   shell.setSound(false, audio.supported);
   if (store.get().sound && audio.supported) {
-    // Browsers only start audio after a gesture, so resume on the first one.
     const resume = () => {
       setSound(true);
       window.removeEventListener('pointerdown', resume);

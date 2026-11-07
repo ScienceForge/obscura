@@ -1,11 +1,6 @@
 import { h, loop, fitCanvas } from '../engine/dom.js';
 import { reducedMotion, sleep, typeInto } from '../engine/motion.js';
 
-/**
- * The opening: a nearly black screen, an identifier, a message that types
- * itself out. It takes about five seconds and can be skipped at any moment
- * (Escape or the skip button). One word in the message is a hidden interaction.
- */
 export function mountIntro(container, ctx) {
   const abort = new AbortController();
   const { signal } = abort;
@@ -30,7 +25,6 @@ export function mountIntro(container, ctx) {
 
   const parts = { before: "You weren't ", word: 'supposed', after: ' to find this.' };
 
-  /* A very dim field of drifting specks. Static under reduced motion. */
   const specks = Array.from({ length: 70 }, (_, i) => ({
     x: (i * 0.618033) % 1,
     y: (i * 0.414213) % 1,
@@ -78,7 +72,6 @@ export function mountIntro(container, ctx) {
     reveal();
   }
 
-  /* The hidden interaction: a leaning word. */
   const alreadyFound = () => Boolean(ctx.store.get().fragments.F5);
   let hintTimer = window.setTimeout(() => {
     if (!alreadyFound()) word.classList.add('is-hinting');

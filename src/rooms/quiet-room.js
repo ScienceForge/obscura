@@ -4,12 +4,6 @@ import { reducedMotion } from '../engine/motion.js';
 const VIGIL_SECONDS = 14;
 const MOVE_LIMIT_PX = 60;
 
-/**
- * OBS-0013: The Quiet Room. There is nothing here. If you stay, with the
- * pointer still, for a little while, it speaks. Moving resets it, but
- * keyboard and screen-reader users are never penalised: only large pointer
- * movement counts.
- */
 export function mount(container, ctx) {
   const { store } = ctx;
   let timer = 0;

@@ -1,8 +1,6 @@
 import { missingRequirements } from '../core/access.js';
 import { h } from '../engine/dom.js';
 
-/** Small full-screen states. None of them is ever a dead end. */
-
 export function mountNotFound(container, _ctx, { path }) {
   container.append(
     h('section', { class: 'notice' },

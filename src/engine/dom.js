@@ -1,5 +1,3 @@
-/** Minimal DOM helper. Text is always inserted as text, never as HTML. */
-
 const PROPERTY_KEYS = new Set(['value', 'checked', 'disabled', 'hidden', 'selected']);
 
 export function h(tag, props, ...children) {
@@ -29,7 +27,6 @@ export const uid = (prefix = 'id') => `${prefix}-${(counter += 1)}`;
 
 export const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
-/** Run `fn` on every frame until the returned stop function is called. */
 export function loop(fn) {
   let id = 0;
   let last = performance.now();
@@ -43,10 +40,6 @@ export function loop(fn) {
   return () => cancelAnimationFrame(id);
 }
 
-/**
- * Size a canvas to its CSS box at the device pixel ratio (capped to keep
- * fill-rate sane on dense screens). Returns the logical size.
- */
 export function fitCanvas(canvas, maxDpr = 2) {
   const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
   const { width, height } = canvas.getBoundingClientRect();

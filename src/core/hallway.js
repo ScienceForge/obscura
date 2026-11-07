@@ -1,12 +1,5 @@
 import { createRng, hashString } from './prng.js';
 
-/**
- * Room 003, The Infinite Hallway. A position is the string of moves taken
- * from the start: L, F or R. The hallway has no map, but every position
- * generates the same look, the same whisper and the same doors every time.
- * A handful of positions are special.
- */
-
 export const MOVES = ['L', 'F', 'R'];
 
 export const SPECIALS = {
@@ -30,12 +23,10 @@ export const SPECIALS = {
   },
 };
 
-/** The three special destinations, in the order the room counts them. */
 export const SPECIAL_IDS = ['threshold', 'numbered', 'loop'];
 
 const STRAIGHT = 7;
 
-/** Which special (if any) does this position hold? */
 export function specialAt(path) {
   if (path === 'F'.repeat(STRAIGHT)) return SPECIALS.threshold;
   if (path.endsWith('LLRR')) return SPECIALS.numbered;
@@ -43,11 +34,9 @@ export function specialAt(path) {
   return null;
 }
 
-/** Apply a move. 'B' steps back, and at the start stays at the start. */
 export function step(path, move) {
   if (move === 'B') return path.slice(0, -1);
   if (!MOVES.includes(move)) return path;
-  // Standing in the loop sends you back to the very first position.
   if (specialAt(path)?.id === 'loop') return move;
   return path + move;
 }
@@ -77,7 +66,6 @@ const WHISPERS = [
   'Left is not always left.',
 ];
 
-/** Hints that appear at specific places, so the hallway teaches itself. */
 const ROUTE_WHISPERS = {
   FFF: 'Straight on. Keep going.',
   FFFFF: 'The corridor does not narrow. Keep going.',
@@ -87,7 +75,6 @@ const ROUTE_WHISPERS = {
   RR: 'A third would bring you back around.',
 };
 
-/** Everything needed to draw and describe a position. Pure and deterministic. */
 export function describePosition(path) {
   const seed = hashString(`hall:${path}`);
   const rng = createRng(seed);

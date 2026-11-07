@@ -23,11 +23,6 @@ function inside(point, polygon) {
   return hit;
 }
 
-/**
- * Room 003: The Infinite Hallway. Three doors at every position. Where you
- * are is just the sequence of turns you took; the hallway invents everything
- * else, the same way every time. Three places in it are not like the others.
- */
 export function mount(container, ctx) {
   let path = '';
   const foundSpecials = new Set();
@@ -38,7 +33,6 @@ export function mount(container, ctx) {
   let anim = null;
   let node = describePosition(path);
 
-  /* ------------------------------------------------------------- elements */
   const canvas = h('canvas', { class: 'hall__canvas', 'aria-hidden': 'true' });
   const level = h('p', { class: 'hall__level' });
   const whisper = h('p', { class: 'hall__whisper', role: 'status', 'aria-live': 'polite' });
@@ -54,7 +48,6 @@ export function mount(container, ctx) {
   const root = h('section', { class: 'room hall', 'aria-label': 'Room 003, The Infinite Hallway' }, canvas, hud, h('div', { class: 'hall__foot' }, finale, whisper, pads, hintButton));
   container.append(root);
 
-  /* ------------------------------------------------------------- behaviour */
   function renderPlaces() {
     places.replaceChildren(...SPECIAL_IDS.map((id) => h('li', { class: foundSpecials.has(id) ? 'is-found' : '' }, foundSpecials.has(id) ? SPECIALS[id].title : '? ? ?')));
   }
@@ -105,7 +98,6 @@ export function mount(container, ctx) {
     whisper.textContent = `Hint: ${HINTS[target][hintLevel[target] - 1]}`;
   }
 
-  /* ----------------------------------------------------------------- input */
   const KEYMAP = { ArrowLeft: 'L', ArrowRight: 'R', ArrowUp: 'F', ArrowDown: 'B', Backspace: 'B', a: 'L', d: 'R', w: 'F', s: 'B' };
   const onKey = (event) => {
     if (event.metaKey || event.ctrlKey || event.altKey) return;
@@ -133,7 +125,6 @@ export function mount(container, ctx) {
     if (hit) go(hit.move);
   });
 
-  /* ------------------------------------------------------------- rendering */
   function drawNode(g, n, W, H, { zoom = 1, alpha = 1, shift = 0, hot = null, now = 0 } = {}) {
     const cx = W / 2 + shift;
     const cy = H * (0.5 + n.tilt);
@@ -158,16 +149,15 @@ export function mount(container, ctx) {
     for (let i = n.steps; i >= 0; i -= 1) {
       const k = 0.5 + 0.5 * (1 - i / n.steps);
       const [x0, y0, x1, y1] = [hw(i), hh(i), hw(i + 1), hh(i + 1)];
-      quad([[cx - x0, cy - y0], [cx + x0, cy - y0], [cx + x1, cy - y1], [cx - x1, cy - y1]], rgb(wall, k * 0.7)); // ceiling
-      quad([[cx - x0, cy + y0], [cx + x0, cy + y0], [cx + x1, cy + y1], [cx - x1, cy + y1]], rgb(wall, k * 1.15)); // floor
-      quad([[cx - x0, cy - y0], [cx - x0, cy + y0], [cx - x1, cy + y1], [cx - x1, cy - y1]], rgb(wall, k * 0.95)); // left wall
-      quad([[cx + x0, cy - y0], [cx + x0, cy + y0], [cx + x1, cy + y1], [cx + x1, cy - y1]], rgb(wall, k * 0.95)); // right wall
+      quad([[cx - x0, cy - y0], [cx + x0, cy - y0], [cx + x1, cy - y1], [cx - x1, cy - y1]], rgb(wall, k * 0.7));
+      quad([[cx - x0, cy + y0], [cx + x0, cy + y0], [cx + x1, cy + y1], [cx - x1, cy + y1]], rgb(wall, k * 1.15));
+      quad([[cx - x0, cy - y0], [cx - x0, cy + y0], [cx - x1, cy + y1], [cx - x1, cy - y1]], rgb(wall, k * 0.95));
+      quad([[cx + x0, cy - y0], [cx + x0, cy + y0], [cx + x1, cy + y1], [cx + x1, cy - y1]], rgb(wall, k * 0.95));
       g.strokeStyle = rgb(light, 1, 0.1 + 0.1 * k);
       g.lineWidth = 1;
       g.strokeRect(cx - x0, cy - y0, x0 * 2, y0 * 2);
     }
 
-    // Ceiling lamps.
     for (let l = 0; l < n.lamps; l += 1) {
       const f = 1.5 + (l * (n.steps - 3)) / Math.max(1, n.lamps);
       const on = n.flicker ? 0.55 + 0.45 * Math.sin(now / 90 + l * 3) ** 2 : 1;
@@ -180,7 +170,6 @@ export function mount(container, ctx) {
       g.fillRect(0, 0, W, H);
     }
 
-    // Side doors.
     for (const door of n.doors.filter((d) => d.move !== 'F')) {
       const a = door.at;
       const side = door.move === 'L' ? -1 : 1;
@@ -200,7 +189,6 @@ export function mount(container, ctx) {
       g.fillText(door.glyph, (xa + xb) / 2, (top(a) + mid(a)) / 2);
     }
 
-    // The far end.
     const fw = hw(n.steps + 1);
     const fh = hh(n.steps + 1);
     const special = n.special;
@@ -221,7 +209,6 @@ export function mount(container, ctx) {
       g.fillText(special?.id === 'numbered' ? '13' : n.doors.find((d) => d.move === 'F').glyph, cx, cy);
     }
 
-    // Depth: the vanishing point swallows light.
     const fog = g.createRadialGradient(cx, cy, 0, cx, cy, Math.min(W, H) * 0.6);
     fog.addColorStop(0, 'rgba(0,0,0,0.25)');
     fog.addColorStop(1, 'rgba(0,0,0,0)');

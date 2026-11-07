@@ -23,14 +23,6 @@ const HINTS = [
   'Zoom in beside each of those three. Together the pieces give right ascension hours, minutes, and declination.',
 ];
 
-/**
- * Room 004: Forgotten Coordinates. An interactive chart of a generated sky.
- * Three stars too faint to see at normal zoom carry the pieces of a
- * coordinate; entering the whole coordinate reveals what was never charted.
- *
- * Pointer: drag to pan, wheel or pinch to zoom, click a star to inspect it.
- * Keyboard: arrows pan, + and - zoom, Enter inspects the star nearest the centre.
- */
 export function mount(container, ctx) {
   const stars = generateStars();
   const named = stars.filter((s) => s.name);
@@ -44,7 +36,6 @@ export function mount(container, ctx) {
   const view = { x: -150, y: 0, zoom: 1 };
   let fly = null;
 
-  /* ------------------------------------------------------------- elements */
   const canvas = h('canvas', { class: 'map__canvas', tabindex: '0', role: 'application', 'aria-label': 'Star chart. Arrow keys pan, plus and minus zoom, Enter inspects the nearest star.' });
   const readout = h('p', { class: 'map__readout' });
   const info = h('div', { class: 'map__info', role: 'status', 'aria-live': 'polite' }, h('p', { class: 'map__info-empty' }, 'Select a star to read its entry.'));
@@ -56,7 +47,6 @@ export function mount(container, ctx) {
     h('label', { for: 'coords' }, 'Tune to coordinates'), coordInput, h('button', { class: 'room-btn', type: 'submit' }, 'Tune'));
   const catalogue = h('details', { class: 'map__catalogue' }, h('summary', {}, 'Catalogued stars'), h('ul', {}, named.map((star) => h('li', {}, h('button', { class: 'link', type: 'button', onclick: () => { flyTo(star.x, star.y, 3); select(star); } }, star.name)))));
   const hintButton = h('button', { class: 'room-btn', type: 'button', onclick: giveHint }, 'Hint');
-  // Once every hint is used, the pieces can be read as text, for anyone who cannot search the chart by eye.
   const readButton = h('button', { class: 'room-btn', type: 'button', hidden: true, onclick: readPieces }, 'Read the coordinate pieces as text');
 
   const hud = h('div', { class: 'map__hud' },
@@ -67,7 +57,6 @@ export function mount(container, ctx) {
   const root = h('section', { class: 'room map', 'aria-label': 'Room 004, Forgotten Coordinates' }, canvas, hud, foot);
   container.append(root);
 
-  /* ----------------------------------------------------------------- math */
   const scale = () => (Math.min(size.width, size.height) / 2300) * view.zoom;
   const toScreen = (x, y) => [(x - view.x) * scale() + size.width / 2, (y - view.y) * scale() + size.height / 2];
   const toWorld = (sx, sy) => [(sx - size.width / 2) / scale() + view.x, (sy - size.height / 2) / scale() + view.y];
@@ -90,7 +79,6 @@ export function mount(container, ctx) {
   const faintVisible = () => view.zoom >= FAINT_ZOOM * 0.85;
   const faintSelectable = () => view.zoom >= FAINT_ZOOM;
 
-  /* ------------------------------------------------------------ behaviour */
   function renderPieces() {
     pieces.replaceChildren(...FORGOTTEN.map((f) => h('li', { class: foundPieces.has(f.id) ? 'is-found' : '' }, foundPieces.has(f.id) ? f.piece : '— — —')));
   }
@@ -187,7 +175,6 @@ export function mount(container, ctx) {
     readButton.hidden = true;
   }
 
-  /* ---------------------------------------------------------------- input */
   const pointers = new Map();
   let dragMoved = 0;
   let pinchStart = null;
@@ -266,7 +253,6 @@ export function mount(container, ctx) {
   };
   window.addEventListener('keydown', onKey);
 
-  /* ------------------------------------------------------------ rendering */
   const resizeObserver = new ResizeObserver(() => {
     const rect = canvas.getBoundingClientRect();
     size = { width: Math.max(1, rect.width), height: Math.max(1, rect.height) };
@@ -339,7 +325,6 @@ export function mount(container, ctx) {
       }
     }
 
-    // The forgotten stars: invisible until you look closely.
     if (faintVisible()) {
       const fade = clamp((view.zoom - FAINT_ZOOM * 0.85) / (FAINT_ZOOM * 0.3), 0, 1);
       for (const f of FORGOTTEN) {
@@ -377,7 +362,6 @@ export function mount(container, ctx) {
       g.strokeRect(sx - 12, sy - 12, 24, 24);
     }
 
-    // Reticle at the centre of the view.
     g.strokeStyle = 'rgba(214, 214, 210, 0.25)';
     g.beginPath();
     g.moveTo(width / 2 - 8, height / 2);

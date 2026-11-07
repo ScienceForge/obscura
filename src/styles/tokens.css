@@ -8,13 +8,11 @@
   --line: rgba(214, 214, 210, 0.11);
   --line-strong: rgba(214, 214, 210, 0.24);
 
-  /* Text. Checked by the contrast audit: --dim and --faint stay above 4.5:1 on --void and --char. */
   --text: #d6d6d2;
   --bright: #f1f1ee;
   --dim: #9b9ba1;
   --faint: #7e7e84;
 
-  /* Accents are used sparingly. --red-text is the readable red for small type. */
   --red: #c8202a;
   --red-text: #ff5560;
   --blue: #5b8cff;

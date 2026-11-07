@@ -1,7 +1,3 @@
-/**
- * Rooms are loaded on demand, so the archive itself stays small and each
- * room's code only downloads when someone walks into it.
- */
 export const ROOM_LOADERS = {
   'OBS-0001': () => import('./last-light.js'),
   'OBS-0002': () => import('./signal-lost.js'),

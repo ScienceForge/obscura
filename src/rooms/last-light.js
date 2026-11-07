@@ -5,14 +5,6 @@ import { reducedMotion } from '../engine/motion.js';
 const DPR_CAP = 1.5;
 const KEY_SPEED = 560;
 
-/**
- * Room 001: The Last Light. A dark room, and one light the visitor controls.
- * Messages are written on the walls; they appear only where the light rests.
- * One more only appears if the light stays perfectly still.
- *
- * Pointer: move to steer, press and hold to narrow the beam.
- * Keyboard: arrow keys or WASD to move, Space or Shift to narrow the beam.
- */
 export function mount(container, ctx) {
   const model = createLightModel();
   let size = { width: 1, height: 1, dpr: 1 };
@@ -21,7 +13,6 @@ export function mount(container, ctx) {
   let hintUntil = 0;
   let droneHandle = null;
 
-  /* ------------------------------------------------------------ elements */
   const canvas = h('canvas', { class: 'light__canvas', 'aria-hidden': 'true' });
   const counter = h('p', { class: 'light__count' });
   const log = h('ol', { class: 'light__log', 'aria-label': 'Messages found' });
@@ -38,10 +29,9 @@ export function mount(container, ctx) {
   const root = h('section', { class: 'room light', 'aria-label': 'Room 001, The Last Light' }, canvas, hud, actions, status);
   container.append(root);
 
-  /* ------------------------------------------------------- offscreen layers */
   const makeLayer = () => document.createElement('canvas');
-  const content = makeLayer(); // walls and every message, shown only inside the light
-  const found = makeLayer(); // messages already found, always faintly visible
+  const content = makeLayer();
+  const found = makeLayer();
   const mask = makeLayer();
 
   function prepare(layer) {
@@ -134,7 +124,6 @@ export function mount(container, ctx) {
   observer.observe(canvas);
   resize();
 
-  /* --------------------------------------------------------------- light */
   const light = { x: 0, y: 0, tx: 0, ty: 0, radius: 0, speed: 0, focus: false };
   light.x = light.tx = size.width * 0.5;
   light.y = light.ty = size.height * 0.5;
@@ -191,7 +180,6 @@ export function mount(container, ctx) {
   window.addEventListener('keydown', onKeyDown);
   window.addEventListener('keyup', onKeyUp);
 
-  /* --------------------------------------------------------------- events */
   function addToLog(message) {
     log.append(h('li', {}, message.text));
     status.textContent = `Message revealed: ${message.text}`;
@@ -252,13 +240,11 @@ export function mount(container, ctx) {
     textButton.hidden = true;
   }
 
-  /* ---------------------------------------------------------------- frame */
   let elapsed = 0;
   const stop = loop((dt, now) => {
     if (dirty) rebuild();
     elapsed += dt;
 
-    // Keyboard steering moves the target.
     if (keys.size) {
       let dx = 0;
       let dy = 0;
@@ -296,17 +282,14 @@ export function mount(container, ctx) {
     g.fillStyle = '#040405';
     g.fillRect(0, 0, size.width, size.height);
 
-    // Ambient pool of warmth around the light.
     const ambient = g.createRadialGradient(light.x, light.y, 0, light.x, light.y, radius * 2.4);
     ambient.addColorStop(0, `rgba(255, 238, 200, ${light.focus ? 0.2 : 0.13})`);
     ambient.addColorStop(1, 'rgba(255, 238, 200, 0)');
     g.fillStyle = ambient;
     g.fillRect(0, 0, size.width, size.height);
 
-    // Messages already found stay faintly visible.
     g.drawImage(found, 0, 0, size.width, size.height);
 
-    // Everything else is visible only inside the light.
     const m = mask.getContext('2d');
     m.setTransform(size.dpr, 0, 0, size.dpr, 0, 0);
     m.globalCompositeOperation = 'source-over';
@@ -324,7 +307,6 @@ export function mount(container, ctx) {
     g.drawImage(mask, 0, 0, size.width, size.height);
     g.globalCompositeOperation = 'source-over';
 
-    // The hidden message fades in as the light holds still on it.
     const dwell = model.dwellProgress();
     if (dwell > 0 && dwell < 1) {
       g.save();
@@ -333,7 +315,6 @@ export function mount(container, ctx) {
       g.restore();
     }
 
-    // The core of the light.
     const core = g.createRadialGradient(light.x, light.y, 0, light.x, light.y, 14);
     core.addColorStop(0, 'rgba(255, 252, 240, 0.95)');
     core.addColorStop(1, 'rgba(255, 252, 240, 0)');
@@ -372,7 +353,6 @@ export function mount(container, ctx) {
     g.restore();
   }
 
-  /* ----------------------------------------------------------------- audio */
   function updateDrone() {
     if (ctx.audio.enabled && !droneHandle) droneHandle = ctx.audio.drone({ freq: 55, gain: 0.05, cutoff: 260, noiseGain: 0.15 });
     if (droneHandle) {

@@ -1,12 +1,5 @@
 import { ENTRIES } from './catalog.js';
 
-/**
- * Routes live in the URL hash (#/archive, #/room/001) so the site works on
- * static hosting without server rewrites, and the browser's back and forward
- * buttons always work.
- *
- * @returns {{ view: string, entryId?: string, path: string }}
- */
 export function matchRoute(hash) {
   const path = String(hash ?? '')
     .replace(/^#\/?/, '')

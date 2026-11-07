@@ -1,10 +1,5 @@
 import { createRng, hashString } from '../core/prng.js';
 
-/**
- * "Plates": small generated images that stand in for each entry in the
- * archive, so the index does not need any image files. Each is drawn once
- * from a seeded generator, so it looks the same every visit.
- */
 export function drawPlate(canvas, entryId, { sealed = false } = {}) {
   const g = canvas.getContext('2d');
   const { width: w, height: h } = canvas;

@@ -1,15 +1,6 @@
-/**
- * Room 002, Signal Lost: three transmissions, each harder to read.
- *
- *  1. a shifted alphabet (turn the dial until it clears)
- *  2. a mirrored alphabet that is also shifted (flip the phase, then tune)
- *  3. a keyword cipher (the first room says what you carry)
- */
-
 const A = 65;
 const mod = (n, m) => ((n % m) + m) % m;
 
-/** Shift letters by `shift` (negative to undo). Other characters are untouched. */
 export function caesar(text, shift) {
   return [...text.toUpperCase()]
     .map((char) => {
@@ -19,7 +10,6 @@ export function caesar(text, shift) {
     .join('');
 }
 
-/** A↔Z, B↔Y, and so on. */
 export function atbash(text) {
   return [...text.toUpperCase()]
     .map((char) => {
@@ -29,7 +19,6 @@ export function atbash(text) {
     .join('');
 }
 
-/** Vigenère with a repeating key; the key only advances on letters. */
 export function vigenere(text, key, { decrypt = false } = {}) {
   const shifts = [...key.toUpperCase()].filter((c) => c >= 'A' && c <= 'Z').map((c) => c.charCodeAt(0) - A);
   if (shifts.length === 0) return text.toUpperCase();
@@ -96,10 +85,6 @@ export const TRANSMISSIONS = [
 
 export const TRANSMISSION_INDEX = new Map(TRANSMISSIONS.map((t) => [t.id, t]));
 
-/**
- * What the visitor currently sees for a transmission.
- * @param {{ shift?: number, mirror?: boolean, key?: string }} attempt
- */
 export function decode(transmission, attempt = {}) {
   switch (transmission.method) {
     case 'shift':
@@ -126,7 +111,6 @@ const circularDistance = (a, b) => {
   return Math.min(d, 26 - d);
 };
 
-/** 0..1, how clear the signal is. Reaches 1 only when the text is correct. */
 export function signalStrength(transmission, attempt = {}) {
   if (isSolved(transmission, attempt)) return 1;
   switch (transmission.method) {

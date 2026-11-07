@@ -1,9 +1,3 @@
-/**
- * Room 001, The Last Light: the logic of what a moving light reveals.
- * Positions are fractions of the room (0..1); the light is in pixels, so the
- * model is told the room size on every step.
- */
-
 export const LIGHT_MESSAGES = [
   { id: 'm1', x: 0.4, y: 0.3, text: 'IT WAS NEVER DARK HERE. IT WAS WAITING.' },
   { id: 'm2', x: 0.7, y: 0.17, text: 'YOU CARRY A LIGHT. ITS OLD NAME IS LUMEN.' },
@@ -12,7 +6,6 @@ export const LIGHT_MESSAGES = [
   { id: 'm5', x: 0.5, y: 0.9, text: 'A LIGHT HELD STEADY BECOMES A WINDOW.' },
 ];
 
-/** A spot with no visible message: the light must rest on it. */
 export const DWELL_SPOT = { x: 0.57, y: 0.5, text: 'STATION 9 WAS BUILT TO LISTEN.' };
 
 const distance = (ax, ay, bx, by) => Math.hypot(ax - bx, ay - by);
@@ -31,12 +24,6 @@ export function createLightModel({
   let dwellFound = false;
 
   return {
-    /**
-     * @param {{ x: number, y: number, radius: number, speed: number }} light  pixels and px/s
-     * @param {{ width: number, height: number }} size
-     * @param {number} dt seconds
-     * @returns {{ found: string[], dwell: boolean }} things newly revealed this step
-     */
     step(light, size, dt) {
       const revealed = [];
       for (const message of messages) {
@@ -64,7 +51,6 @@ export function createLightModel({
       return { found: revealed, dwell: dwellNow };
     },
 
-    /** 0..1 how revealed a message is, for drawing. */
     progress: (id) => (found.has(id) ? 1 : Math.min(1, (exposure.get(id) ?? 0) / revealSeconds)),
     dwellProgress: () => (dwellFound ? 1 : Math.min(1, dwellTime / dwellSeconds)),
     isFound: (id) => found.has(id),
@@ -77,7 +63,6 @@ export function createLightModel({
     get allFound() {
       return found.size === messages.length;
     },
-    /** Accessible alternative: mark everything as read. */
     revealAll() {
       for (const message of messages) found.add(message.id);
       dwellFound = true;

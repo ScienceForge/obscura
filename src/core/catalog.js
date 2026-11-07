@@ -1,17 +1,3 @@
-/**
- * Everything the archive contains, as data: entries, the fragments of the
- * archive's history, and achievements. Rooms and screens read from here.
- */
-
-/**
- * @typedef {{
- *   id: string, route: string, title: string, classification: string,
- *   description: string, kind: 'room'|'secret', hidden: boolean,
- *   requires: string[], sealedHint: string
- * }} Entry
- */
-
-/** @type {Entry[]} */
 export const ENTRIES = [
   {
     id: 'OBS-0001',
@@ -84,11 +70,6 @@ export const ENTRIES = [
 export const ENTRY_INDEX = new Map(ENTRIES.map((entry) => [entry.id, entry]));
 export const ROOM_IDS = ENTRIES.filter((entry) => entry.kind === 'room').map((entry) => entry.id);
 
-/**
- * The fictional history of the archive, in seven fragments. Each is found in
- * a different place. The visitor identifier in the last one is filled in at
- * display time (see ui/origin.js).
- */
 export const FRAGMENTS = [
   {
     id: 'F1',
@@ -136,10 +117,6 @@ export const FRAGMENTS = [
 
 export const FRAGMENT_INDEX = new Map(FRAGMENTS.map((fragment) => [fragment.id, fragment]));
 
-/**
- * Achievements. `rule` ones are awarded automatically from progress; the rest
- * are awarded explicitly by the thing that triggers them.
- */
 export const ACHIEVEMENTS = [
   { id: 'arrival', title: 'Unexpected Visitor', description: 'You entered the archive.' },
   { id: 'supposed', title: 'Leaning Word', description: 'You touched the word that was leaning.' },

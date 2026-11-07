@@ -1,8 +1,3 @@
-/**
- * All sound is synthesised with the Web Audio API: no audio files. Sound is
- * off until the visitor turns it on, and every method is safe to call when it
- * is off or unsupported.
- */
 export function createAudio() {
   const Context = window.AudioContext || window.webkitAudioContext;
   let ctx = null;
@@ -61,7 +56,6 @@ export function createAudio() {
       return enabled;
     },
 
-    /** A short pitched blip. */
     blip(freq = 440, duration = 0.12, { type = 'sine', gain = 0.12 } = {}) {
       if (!live()) return;
       const t = ctx.currentTime;
@@ -77,13 +71,11 @@ export function createAudio() {
       osc.stop(t + duration + 0.05);
     },
 
-    /** A rising pair of tones for a discovery. */
     discovery() {
       this.blip(392, 0.5, { gain: 0.07 });
       window.setTimeout(() => this.blip(587, 0.8, { gain: 0.06 }), 140);
     },
 
-    /** Burst of filtered noise (static, footsteps, doors). */
     burst(duration = 0.2, { freq = 1200, q = 0.8, gain = 0.15, type = 'bandpass' } = {}) {
       if (!live()) return;
       const t = ctx.currentTime;
@@ -100,10 +92,6 @@ export function createAudio() {
       source.stop(t + duration + 0.05);
     },
 
-    /**
-     * A sustained drone. Returns a handle: `set({ freq, gain, cutoff })`
-     * glides parameters, `stop()` fades it out.
-     */
     drone({ freq = 55, gain = 0.1, cutoff = 400, detune = 7, noiseGain = 0 } = {}) {
       if (!ensure()) return { set() {}, stop() {} };
       const t = ctx.currentTime;

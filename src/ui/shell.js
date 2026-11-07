@@ -2,11 +2,6 @@ import { h } from '../engine/dom.js';
 import { reducedMotion } from '../engine/motion.js';
 import { createToaster } from './toast.js';
 
-/**
- * The frame around every screen: film grain, vignette, a minimal header, the
- * stage views mount into, and notifications. The header is deliberately quiet,
- * and hidden entirely on the opening screen.
- */
 export function createShell(root, { onToggleSound }) {
   const where = h('span', { class: 'bar__where' });
   const sound = h('button', { class: 'bar__btn', type: 'button', 'aria-pressed': 'false', onclick: onToggleSound }, 'SND OFF');
@@ -31,7 +26,6 @@ export function createShell(root, { onToggleSound }) {
     setWhere(text) {
       where.textContent = text ?? '';
     },
-    /** The edges of the screen flush red for a moment, as if something noticed. */
     pulse() {
       if (reducedMotion()) return;
       vignette.classList.remove('is-pulsing');
@@ -46,7 +40,6 @@ export function createShell(root, { onToggleSound }) {
       sound.setAttribute('aria-pressed', String(on));
       sound.disabled = !supported;
     },
-    /** Fade the stage out, run `swap`, then fade back in. */
     async transition(swap) {
       if (reducedMotion()) {
         swap();
