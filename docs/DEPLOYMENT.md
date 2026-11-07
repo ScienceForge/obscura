@@ -10,7 +10,7 @@ OBSCURA is a static site, so GitHub Pages hosts it for free. The repository alre
 
    ```bash
    git branch -M main
-   git remote add origin https://github.com/<your-username>/obscura.git
+   git remote add origin https://github.com/ScienceForge/obscura.git
    git push -u origin main
    ```
 
@@ -19,7 +19,7 @@ OBSCURA is a static site, so GitHub Pages hosts it for free. The repository alre
 4. **Wait for the workflow.** Open the **Actions** tab. When the "Test and deploy" run finishes, the site is live at:
 
    ```
-   https://<your-username>.github.io/obscura/
+   https://scienceforge.github.io/obscura/
    ```
 
 That is all. The workflow sets `VITE_GITHUB_REPO` to your repository automatically, so the submission form opens issues on the right repository without any further configuration.
@@ -46,7 +46,7 @@ npm run preview    # serves it locally
 To test the submission link locally, build with the variable set:
 
 ```bash
-VITE_GITHUB_REPO=your-username/obscura npm run build
+VITE_GITHUB_REPO=ScienceForge/obscura npm run build
 ```
 
 ## If something looks wrong

@@ -9,7 +9,7 @@ OBSCURA is an experimental website that behaves more like a place than a page. T
 
 It is a static site: no backend, no accounts, no tracking, no API keys, and no AI service. Everything runs in the browser.
 
-**Live demo:** _add your GitHub Pages address here once it is deployed (see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md))._
+**Live demo:** https://scienceforge.github.io/obscura/
 
 ![The entrance: a nearly black screen, an identifier, and a message that types itself out](docs/screenshots/01-entrance.png)
 
@@ -79,7 +79,7 @@ The whole project has three dependencies: `vite` (dev) and two font packages. Th
 Requires Node.js 20 or newer.
 
 ```bash
-git clone https://github.com/<your-username>/obscura.git
+git clone https://github.com/ScienceForge/obscura.git
 cd obscura
 npm install
 npm run dev
