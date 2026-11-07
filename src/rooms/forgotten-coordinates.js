@@ -56,12 +56,14 @@ export function mount(container, ctx) {
     h('label', { for: 'coords' }, 'Tune to coordinates'), coordInput, h('button', { class: 'room-btn', type: 'submit' }, 'Tune'));
   const catalogue = h('details', { class: 'map__catalogue' }, h('summary', {}, 'Catalogued stars'), h('ul', {}, named.map((star) => h('li', {}, h('button', { class: 'link', type: 'button', onclick: () => { flyTo(star.x, star.y, 3); select(star); } }, star.name)))));
   const hintButton = h('button', { class: 'room-btn', type: 'button', onclick: giveHint }, 'Hint');
+  // Once every hint is used, the pieces can be read as text, for anyone who cannot search the chart by eye.
+  const readButton = h('button', { class: 'room-btn', type: 'button', hidden: true, onclick: readPieces }, 'Read the coordinate pieces as text');
 
   const hud = h('div', { class: 'map__hud' },
     h('h1', { class: 'room-title', tabindex: '-1' }, 'Forgotten Coordinates'),
     h('p', { class: 'room-help' }, 'Drag to move, scroll or pinch to zoom. Some things only resolve up close.'),
     readout, pieces, info);
-  const foot = h('div', { class: 'map__foot' }, form, h('p', { class: 'visually-hidden', id: 'coords-help' }, 'Type right ascension hours, minutes and declination, for example 04h 17m minus 39.'), message, h('div', { class: 'map__tools' }, hintButton, catalogue), hints);
+  const foot = h('div', { class: 'map__foot' }, form, h('p', { class: 'visually-hidden', id: 'coords-help' }, 'Type right ascension hours, minutes and declination, for example 04h 17m minus 39.'), message, h('div', { class: 'map__tools' }, hintButton, readButton, catalogue), hints);
   const root = h('section', { class: 'room map', 'aria-label': 'Room 004, Forgotten Coordinates' }, canvas, hud, foot);
   container.append(root);
 
@@ -175,6 +177,14 @@ export function mount(container, ctx) {
     message.textContent = `Hint: ${HINTS[hintLevel - 1]}`;
     hintButton.textContent = hintLevel >= HINTS.length ? 'No more hints' : `Hint (${hintLevel}/${HINTS.length})`;
     hintButton.disabled = hintLevel >= HINTS.length;
+    readButton.hidden = hintLevel < HINTS.length;
+  }
+
+  function readPieces() {
+    for (const f of FORGOTTEN) foundPieces.add(f.id);
+    renderPieces();
+    message.textContent = `The three pieces: ${FORGOTTEN.map((f) => f.clue).join('; ')}. Enter them together as one coordinate.`;
+    readButton.hidden = true;
   }
 
   /* ---------------------------------------------------------------- input */

@@ -34,7 +34,7 @@ export function mountOrigin(container, ctx) {
           : redactLine(fragment.text);
         return h('li', { class: `origin__item${got ? ' is-found' : ' is-missing'}`, style: { '--i': String(index) } },
           h('span', { class: 'origin__id' }, fragment.id),
-          h('p', { class: 'origin__text', 'aria-label': got ? undefined : 'Redacted fragment' }, text),
+          h('p', { class: 'origin__text', role: got ? undefined : 'img', 'aria-label': got ? undefined : 'Redacted fragment' }, text),
           h('span', { class: 'origin__source' }, got ? `recovered from: ${fragment.source}` : 'source: unknown'));
       })),
       complete

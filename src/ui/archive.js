@@ -266,6 +266,24 @@ export function mountArchive(container, ctx) {
 
   renderList();
   say('Type help for commands, or choose an entry above.', 'dim');
+
+  // If nobody touches anything for a while, the archive notices.
+  const idleLines = ['Still there?', 'The archive is listening.', 'Nothing has moved. Something has noticed.'];
+  let idleCount = 0;
+  let idleTimer = 0;
+  const armIdle = () => {
+    window.clearTimeout(idleTimer);
+    if (idleCount >= idleLines.length) return;
+    idleTimer = window.setTimeout(() => {
+      say(idleLines[idleCount], 'dim');
+      idleCount += 1;
+      armIdle();
+    }, 45000);
+  };
+  const touch = () => armIdle();
+  window.addEventListener('pointermove', touch, { passive: true });
+  window.addEventListener('keydown', touch);
+  armIdle();
   title.focus({ preventScroll: true });
 
   return {
@@ -273,6 +291,9 @@ export function mountArchive(container, ctx) {
       destroyed = true;
       unsubscribe();
       window.removeEventListener('keydown', onKey);
+      window.removeEventListener('pointermove', touch);
+      window.removeEventListener('keydown', touch);
+      window.clearTimeout(idleTimer);
       cancelAnimationFrame(frame);
     },
   };
