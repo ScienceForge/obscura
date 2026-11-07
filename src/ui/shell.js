@@ -21,7 +21,8 @@ export function createShell(root, { onToggleSound }) {
   const stage = h('main', { class: 'stage', id: 'stage', tabindex: '-1' });
   const skip = h('a', { class: 'skip-link', href: '#stage', onclick: (event) => { event.preventDefault(); stage.focus(); } }, 'Skip to content');
 
-  root.append(skip, h('div', { class: 'grain', 'aria-hidden': 'true' }), h('div', { class: 'vignette', 'aria-hidden': 'true' }), bar, stage);
+  const vignette = h('div', { class: 'vignette', 'aria-hidden': 'true' });
+  root.append(skip, h('div', { class: 'grain', 'aria-hidden': 'true' }), vignette, bar, stage);
   const toaster = createToaster(document.body);
 
   return {
@@ -29,6 +30,13 @@ export function createShell(root, { onToggleSound }) {
     toast: toaster.show,
     setWhere(text) {
       where.textContent = text ?? '';
+    },
+    /** The edges of the screen flush red for a moment, as if something noticed. */
+    pulse() {
+      if (reducedMotion()) return;
+      vignette.classList.remove('is-pulsing');
+      void vignette.offsetWidth;
+      vignette.classList.add('is-pulsing');
     },
     setView(name) {
       document.body.dataset.view = name;

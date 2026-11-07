@@ -33,21 +33,54 @@ body[data-view='room'] .stage { padding-top: 0; }
   .bar__nav { gap: 14px; }
 }
 
-/* Toasts */
+/* Notifications: signals that tear in out of static and decay back into it. */
 .toasts {
   position: fixed; right: var(--gutter); top: 64px; z-index: 200;
-  display: grid; gap: 10px; width: min(360px, calc(100vw - 2 * var(--gutter)));
+  display: grid; gap: 16px; width: min(390px, calc(100vw - 2 * var(--gutter)));
   pointer-events: none;
 }
 .toast {
-  padding: 12px 16px;
-  background: rgba(8, 8, 10, 0.94);
-  border-left: 1px solid var(--red);
-  box-shadow: 0 0 0 1px var(--line);
-  animation: toast-in 0.6s var(--ease);
+  --tone: var(--red); --tone-text: var(--red-text);
+  display: grid; grid-template-columns: 2px minmax(0, 1fr); gap: 15px; padding: 12px 18px 12px 0;
+  background: linear-gradient(90deg, rgba(5, 5, 6, 0.95), rgba(5, 5, 6, 0.8) 72%, rgba(5, 5, 6, 0));
+  animation: toast-in 0.7s steps(14) both;
 }
-.toast.is-leaving { opacity: 0; transform: translateX(6px); transition: opacity 0.6s, transform 0.6s; }
-.toast__label { font-size: 0.625rem; letter-spacing: 0.24em; color: var(--red-text); }
-.toast__title { color: var(--bright); margin-top: 2px; }
-.toast__detail { color: var(--dim); margin-top: 2px; font-size: 0.75rem; }
-@keyframes toast-in { from { opacity: 0; transform: translateX(10px); } }
+.toast--complete, .toast--achievement { --tone: var(--bright); --tone-text: var(--dim); }
+.toast__mark { background: var(--tone); box-shadow: 0 0 14px var(--tone); transform-origin: top; animation: toast-line 0.7s var(--ease) both; }
+.toast__body { display: grid; gap: 4px; min-width: 0; }
+.toast__label { font-size: 0.625rem; letter-spacing: 0.3em; color: var(--tone-text); }
+.toast__label::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 10px; vertical-align: 1px; background: var(--tone); animation: blink 1.1s steps(1) infinite; }
+.toast__title { font-family: var(--serif); font-style: italic; font-size: 1.5rem; line-height: 1.12; color: var(--bright); overflow-wrap: anywhere; }
+.toast__detail { font-size: 0.75rem; color: var(--dim); }
+.toast--fragment .toast__title { text-shadow: 0 0 22px rgba(255, 85, 96, 0.6); }
+.toast--fragment .toast__body { animation: shiver 4.5s steps(1) infinite 1s; }
+.toast.is-dying { animation: toast-die 0.76s steps(10) forwards; }
+
+@keyframes toast-in {
+  0% { opacity: 0; transform: translateX(16px) skewX(-8deg); clip-path: inset(0 0 100% 0); }
+  14% { opacity: 1; transform: translateX(-7px); clip-path: inset(42% 0 28% 0); }
+  30% { transform: translateX(6px) skewX(4deg); clip-path: inset(0 0 58% 0); }
+  52% { transform: translateX(-2px); clip-path: inset(12% 0 0 0); }
+  100% { opacity: 1; transform: none; clip-path: inset(0); }
+}
+@keyframes toast-line { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes toast-die {
+  0% { opacity: 1; }
+  18% { opacity: 0.25; transform: translateX(-5px); }
+  34% { opacity: 1; clip-path: inset(32% 0 18% 0); transform: translateX(4px) skewX(5deg); }
+  58% { opacity: 0.45; clip-path: inset(0 0 68% 0); }
+  100% { opacity: 0; transform: translateX(12px) skewX(7deg); clip-path: inset(50% 0 50% 0); }
+}
+@keyframes shiver { 0%, 100% { transform: none; } 86% { transform: translateX(2px); } 88% { transform: translateX(-3px) skewX(-3deg); } 90% { transform: none; } }
+
+/* When something is recovered, the edges of the screen flush red. */
+.vignette.is-pulsing { animation: edge-pulse 1.9s ease-out; }
+@keyframes edge-pulse {
+  0% { box-shadow: inset 0 0 0 0 rgba(200, 32, 42, 0); }
+  10% { box-shadow: inset 0 0 220px 36px rgba(200, 32, 42, 0.6); }
+  22% { box-shadow: inset 0 0 90px 10px rgba(200, 32, 42, 0.2); }
+  34% { box-shadow: inset 0 0 200px 30px rgba(200, 32, 42, 0.45); }
+  100% { box-shadow: inset 0 0 0 0 rgba(200, 32, 42, 0); }
+}
+
+@media (max-width: 640px) { .toast__title { font-size: 1.3rem; } }

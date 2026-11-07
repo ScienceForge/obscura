@@ -4,9 +4,11 @@ import { parseCommand } from '../core/commands.js';
 import { createSequenceDetector } from '../core/sequence.js';
 import { h } from '../engine/dom.js';
 import { reducedMotion } from '../engine/motion.js';
+import { resolveInto } from '../engine/scramble.js';
 import { drawPlate } from './plates.js';
 
-const STATUS_LABEL = { complete: 'COMPLETE', explored: 'EXPLORED', open: 'UNEXPLORED', sealed: 'SEALED' };
+const STATUS_LABEL = { complete: 'REMEMBERED', explored: 'VISITED', open: 'WAITING', sealed: 'WITHHELD' };
+const WHISPERS = ['NOT YET', 'YOU ARE EARLY', 'IT HEARD YOU', 'NOT READY', 'WAIT'];
 const redact = (text) => '█'.repeat(Math.max(4, text.length));
 
 export function mountArchive(container, ctx) {
@@ -22,7 +24,7 @@ export function mountArchive(container, ctx) {
   const sTitle = h('h2', { class: 'specimen__title' });
   const sText = h('p', { class: 'specimen__text' });
   const sAction = h('a', { class: 'specimen__action', href: '#/archive' });
-  const specimen = h('aside', { class: 'specimen', 'aria-label': 'Selected entry' }, plate, sClass, sTitle, sText, sAction);
+  const specimen = h('aside', { class: 'specimen', 'aria-label': 'Selected entry' }, h('div', { class: 'specimen__frame' }, plate), sClass, sTitle, sText, sAction);
 
   const output = h('div', { class: 'console__out', role: 'log', 'aria-live': 'polite' });
   const input = h('input', { class: 'console__input', type: 'text', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', maxLength: 64, 'aria-label': 'Archive prompt. Type help for commands.', placeholder: 'type help' });
@@ -57,11 +59,13 @@ export function mountArchive(container, ctx) {
   function renderList() {
     const progress = store.get();
     const focusedId = document.activeElement?.closest?.('[data-entry]')?.dataset.entry;
-    const rows = visibleEntries(progress).map(({ entry, status: base }) => {
+    const rows = visibleEntries(progress).map(({ entry, status: base }, index) => {
       const status = statusOf(progress, entry);
       const sealed = base === 'sealed';
-      const shown = sealed ? redact(entry.title) : entry.title;
-      const classification = sealed ? '░░░░░░░░' : entry.classification;
+      const shown = sealed
+        ? h('span', { class: 'index__bar', 'aria-hidden': 'true', dataset: { whisper: WHISPERS[(index + entry.title.length) % WHISPERS.length] }, style: { '--w': `${Math.min(96, 28 + entry.title.length * 2.6)}%` } })
+        : entry.title;
+      const classification = sealed ? '[ withheld ]' : entry.classification;
       const row = h(
         sealed ? 'button' : 'a',
         {
@@ -74,6 +78,7 @@ export function mountArchive(container, ctx) {
           onfocus: () => select(entry.id),
           onclick: sealed ? () => { select(entry.id); sayEntryLocked(entry); } : undefined,
         },
+        h('span', { class: `eye${sealed ? ' is-shut' : ''}`, 'aria-hidden': 'true' }, h('i', { class: 'eye__pupil' })),
         h('span', { class: 'index__id' }, entry.id),
         h('span', { class: 'index__title' }, shown),
         h('span', { class: 'index__class' }, classification),
@@ -260,6 +265,43 @@ export function mountArchive(container, ctx) {
   list.addEventListener('pointermove', onPointerMove);
   list.addEventListener('pointerleave', onPointerLeave);
 
+  /* The rows are watching. Each eye turns toward the pointer. */
+  let eyeFrame = 0;
+  let lastPoint = { x: window.innerWidth / 2, y: window.innerHeight / 3 };
+  function lookAt() {
+    eyeFrame = 0;
+    for (const eye of list.querySelectorAll('.eye:not(.is-shut)')) {
+      const rect = eye.getBoundingClientRect();
+      const dx = lastPoint.x - (rect.left + rect.width / 2);
+      const dy = lastPoint.y - (rect.top + rect.height / 2);
+      const length = Math.hypot(dx, dy) || 1;
+      const reach = Math.min(3.2, length / 60);
+      eye.style.setProperty('--ex', `${(dx / length) * reach}px`);
+      eye.style.setProperty('--ey', `${(dy / length) * reach}px`);
+    }
+  }
+  const onLook = (event) => {
+    lastPoint = { x: event.clientX, y: event.clientY };
+    if (!eyeFrame && !reducedMotion()) eyeFrame = requestAnimationFrame(lookAt);
+  };
+  window.addEventListener('pointermove', onLook, { passive: true });
+
+  /* Now and then, a title corrupts and then recovers. */
+  let glitchTimer = 0;
+  function scheduleGlitch() {
+    glitchTimer = window.setTimeout(() => {
+      const titles = [...list.querySelectorAll('.index__row:not(.is-sealed) .index__title')];
+      const el = titles[Math.floor(Math.random() * titles.length)];
+      if (el && !document.hidden && !reducedMotion()) {
+        const original = el.textContent;
+        el.classList.add('is-glitching');
+        resolveInto(el, original, { duration: 900 }).then(() => el.classList.remove('is-glitching'));
+      }
+      scheduleGlitch();
+    }, 16000 + Math.random() * 22000);
+  }
+  if (!reducedMotion()) scheduleGlitch();
+
   const unsubscribe = store.subscribe(() => {
     if (!destroyed) renderList();
   });
@@ -292,6 +334,9 @@ export function mountArchive(container, ctx) {
       unsubscribe();
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('pointermove', touch);
+      window.removeEventListener('pointermove', onLook);
+      window.clearTimeout(glitchTimer);
+      cancelAnimationFrame(eyeFrame);
       window.removeEventListener('keydown', touch);
       window.clearTimeout(idleTimer);
       cancelAnimationFrame(frame);

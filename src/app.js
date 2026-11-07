@@ -55,22 +55,23 @@ export function startApp(root) {
     switch (event.type) {
       case 'entry': {
         const entry = ENTRY_INDEX.get(event.id);
-        shell.toast({ label: 'ENTRY LOGGED', title: `${entry.id} · ${entry.title}` });
+        shell.toast({ kind: 'entry', label: 'IT WAS ALREADY HERE', title: `${entry.id} · ${entry.title}` });
         break;
       }
       case 'complete': {
         const entry = ENTRY_INDEX.get(event.id);
-        shell.toast({ label: 'COMPLETE', title: entry.title, detail: 'The archive has noted this.' });
+        shell.toast({ kind: 'complete', label: 'ROOM CLEARED', title: entry.title, detail: 'It noticed.' });
         audio.discovery();
         break;
       }
       case 'fragment':
-        shell.toast({ label: 'FRAGMENT RECOVERED', title: 'A fragment of something older', detail: 'Filed under OBS-0000.' });
+        shell.toast({ kind: 'fragment', label: 'SOMETHING WAS REMEMBERED', title: 'It gave you a piece of itself.', detail: 'Filed under OBS-0000.', duration: 7000 });
+        shell.pulse();
         audio.discovery();
         break;
       case 'achievement': {
         const achievement = ACHIEVEMENT_INDEX.get(event.id);
-        shell.toast({ label: 'ACHIEVEMENT', title: achievement.title, detail: achievement.description });
+        shell.toast({ kind: 'achievement', label: 'NOTED', title: achievement.title, detail: achievement.description });
         break;
       }
       default:
