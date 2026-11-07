@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OBSCURA</title>
+    <meta
+      name="description"
+      content="OBSCURA is a digital discovery archive: four hidden interactive rooms, secret routes, puzzles, and a fictional history you piece together from fragments."
+    />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#050506" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OBSCURA" />
+    <meta property="og:description" content="You weren't supposed to find this. A digital discovery archive." />
+    <meta property="og:image" content="./og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "OBSCURA",
+        "description": "A digital discovery archive of hidden interactive rooms and secret routes."
+      }
+    </script>
+  </head>
+  <body data-view="home">
+    <div id="app">
+      <div class="boot" role="status"><span class="boot__dot" aria-hidden="true"></span><span>Opening the archive</span></div>
+      <noscript>
+        <div class="fatal">
+          <h1>OBSCURA needs JavaScript</h1>
+          <p>
+            The archive is a set of interactive rooms that run in your browser, so it cannot open
+            without JavaScript. There are four rooms, a handful of secret routes, and a story told in
+            seven fragments.
+          </p>
+        </div>
+      </noscript>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+.bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  padding: 18px var(--gutter);
+  font-size: 0.6875rem; letter-spacing: 0.22em; text-transform: uppercase;
+  background: linear-gradient(to bottom, rgba(5, 5, 6, 0.85), transparent);
+  transition: opacity 0.6s;
+}
+.bar__mark { text-decoration: none; color: var(--bright); justify-self: start; }
+.bar__where { color: var(--faint); text-align: center; }
+.bar__nav { display: flex; gap: 22px; justify-self: end; }
+.bar__btn {
+  background: none; border: 0; padding: 4px 0; color: var(--dim);
+  letter-spacing: inherit; text-transform: inherit; text-decoration: none;
+  transition: color 0.2s;
+}
+.bar__btn:hover { color: var(--bright); }
+.bar__btn:disabled { color: var(--faint); cursor: default; }
+
+body[data-view='home'] .bar { opacity: 0; visibility: hidden; }
+
+.stage { min-height: 100vh; padding-top: 72px; outline: none; }
+.stage.is-out { opacity: 0; transition: opacity 0.16s ease; }
+.stage.is-in { animation: stage-in 0.5s var(--ease); }
+@keyframes stage-in { from { opacity: 0; transform: translateY(6px); filter: blur(3px); } }
+
+body[data-view='home'] .stage,
+body[data-view='room'] .stage { padding-top: 0; }
+
+@media (max-width: 640px) {
+  .bar { grid-template-columns: auto 1fr auto; gap: 12px; padding: 14px var(--gutter); }
+  .bar__where { text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar__nav { gap: 14px; }
+}
+
+/* Toasts */
+.toasts {
+  position: fixed; left: var(--gutter); bottom: var(--gutter); z-index: 200;
+  display: grid; gap: 10px; width: min(360px, calc(100vw - 2 * var(--gutter)));
+  pointer-events: none;
+}
+.toast {
+  padding: 12px 16px;
+  background: rgba(8, 8, 10, 0.94);
+  border-left: 1px solid var(--red);
+  box-shadow: 0 0 0 1px var(--line);
+  animation: toast-in 0.6s var(--ease);
+}
+.toast.is-leaving { opacity: 0; transform: translateX(-6px); transition: opacity 0.6s, transform 0.6s; }
+.toast__label { font-size: 0.625rem; letter-spacing: 0.24em; color: var(--red-text); }
+.toast__title { color: var(--bright); margin-top: 2px; }
+.toast__detail { color: var(--dim); margin-top: 2px; font-size: 0.75rem; }
+@keyframes toast-in { from { opacity: 0; transform: translateX(-10px); } }

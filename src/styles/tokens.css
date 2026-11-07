@@ -1,0 +1,27 @@
+:root {
+  color-scheme: dark;
+
+  --void: #050506;
+  --ink: #0a0a0c;
+  --char: #111114;
+  --char-2: #18181c;
+  --line: rgba(214, 214, 210, 0.11);
+  --line-strong: rgba(214, 214, 210, 0.24);
+
+  /* Text. --dim and --faint both pass 4.5:1 on --void. */
+  --text: #d6d6d2;
+  --bright: #f1f1ee;
+  --dim: #8b8b90;
+  --faint: #6f6f75;
+
+  /* Accents are used sparingly. --red-text is the readable red for small type. */
+  --red: #c8202a;
+  --red-text: #ff5560;
+  --blue: #5b8cff;
+
+  --serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  --mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --ease: cubic-bezier(0.16, 0.8, 0.2, 1);
+  --gutter: clamp(18px, 4vw, 56px);
+}
