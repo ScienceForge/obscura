@@ -154,6 +154,7 @@ export const ACHIEVEMENTS = [
   { id: 'origin_seen', title: 'First Entry', description: 'You found THE_ORIGIN.' },
   { id: 'fragments_3', title: 'A Pattern', description: 'You recovered three fragments of the archive’s history.', rule: (p) => Object.keys(p.fragments).length >= 3 },
   { id: 'fragments_7', title: 'The Whole Story', description: 'You recovered every fragment.', rule: (p) => Object.keys(p.fragments).length >= FRAGMENTS.length },
+  { id: 'transmitter', title: 'Signal Sent', description: 'You prepared a transmission for the archive.' },
   { id: 'observed', title: 'Observed', description: 'You sat in the Quiet Room until it spoke.' },
 ];
 

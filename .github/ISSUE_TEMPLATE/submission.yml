@@ -1,0 +1,56 @@
+name: Submission
+description: A discovery or experimental experience for the OBSCURA archive.
+title: "Submission: "
+labels: ["submission", "needs-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for transmitting. A person reads every submission. Nothing is published automatically,
+        and nothing here appears in the archive until it has been reviewed and approved.
+  - type: input
+    id: url
+    attributes:
+      label: Link to the experience
+      description: A public https:// address that loads without an account.
+      placeholder: https://
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Interactive visual
+        - Audio
+        - Puzzle or game
+        - Narrative
+        - Tool or utility
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What is it, and what happens when someone arrives?
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: creator
+    attributes:
+      label: Creator name (optional)
+      description: Shown beside the entry if it is approved. Leave empty to stay anonymous.
+  - type: input
+    id: contact
+    attributes:
+      label: Contact or profile link (optional)
+      description: Only for the reviewer. Not displayed publicly.
+  - type: checkboxes
+    id: permission
+    attributes:
+      label: Permission
+      options:
+        - label: I made this, or I have permission to share it, and I am happy for it to appear in the archive if approved.
+          required: true
