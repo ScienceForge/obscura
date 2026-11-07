@@ -1,0 +1,101 @@
+/* Shared room furniture */
+.room { position: relative; min-height: 100vh; overflow: hidden; }
+.room-title { font-family: var(--serif); font-weight: 400; font-style: italic; font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.05; color: var(--bright); outline: none; }
+.room-help { margin-top: 8px; max-width: 28rem; color: var(--dim); font-size: 0.75rem; }
+.room-btn {
+  padding: 8px 14px; background: rgba(5, 5, 6, 0.7); border: 1px solid var(--line-strong); color: var(--text);
+  font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase;
+  transition: border-color 0.2s, color 0.2s;
+}
+.room-btn:hover:not(:disabled) { border-color: var(--bright); color: var(--bright); }
+.room-btn:disabled { color: var(--faint); cursor: default; }
+
+/* Room 001: The Last Light */
+.light__canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; display: block; }
+@media (pointer: fine) { .light__canvas { cursor: none; } }
+.light__hud { position: absolute; top: 72px; left: var(--gutter); max-width: min(24rem, calc(100vw - 2 * var(--gutter))); pointer-events: none; }
+.light__count { margin-top: 14px; font-size: 0.6875rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint); }
+.light__log { margin-top: 10px; display: grid; gap: 6px; font-family: var(--serif); font-style: italic; font-size: 1rem; color: rgba(255, 240, 205, 0.55); }
+.light__finale { margin-top: 18px; font-family: var(--serif); font-style: italic; font-size: 1.25rem; color: var(--bright); animation: stage-in 1.6s var(--ease); }
+.light__actions { position: absolute; right: var(--gutter); bottom: var(--gutter); display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+
+/* Room 002: Signal Lost */
+.signal { padding-top: 64px; }
+.signal__scope { display: block; width: 100%; height: 200px; border-bottom: 1px solid var(--line); background: linear-gradient(to bottom, rgba(200, 32, 42, 0.04), transparent); }
+.signal.is-clear .signal__scope { background: linear-gradient(to bottom, rgba(241, 241, 238, 0.06), transparent); }
+.signal__panel { max-width: 44rem; margin: 0 auto; padding: 32px var(--gutter) 96px; display: grid; gap: 22px; }
+.signal__tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.signal__tab { padding: 8px 14px; background: none; border: 1px solid var(--line); color: var(--dim); font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.signal__tab.is-current { border-color: var(--line-strong); color: var(--bright); }
+.signal__tab.is-solved { color: var(--text); }
+.signal__tab:disabled { color: var(--faint); border-style: dashed; cursor: not-allowed; }
+.signal__text { min-height: 7.5em; padding: 20px; border: 1px solid var(--line); background: rgba(0, 0, 0, 0.35); font-size: 1.05rem; line-height: 1.8; letter-spacing: 0.12em; color: var(--text); overflow-wrap: anywhere; }
+.signal.is-clear .signal__text { color: var(--bright); border-color: var(--line-strong); text-shadow: 0 0 18px rgba(255, 255, 255, 0.18); }
+.signal__meter-row { display: grid; grid-template-columns: 9rem 1fr; gap: 14px; align-items: center; }
+.signal__meter-label { font-size: 0.6875rem; letter-spacing: 0.16em; color: var(--dim); }
+.signal__meter { height: 6px; background: var(--char); border: 1px solid var(--line); }
+.signal__meter-fill { display: block; height: 100%; width: 0; background: var(--red); transition: width 0.25s ease, background 0.3s; }
+.signal.is-clear .signal__meter-fill { background: var(--bright); }
+.signal__control { display: grid; grid-template-columns: 9rem 1fr 2.5rem; gap: 14px; align-items: center; }
+.signal__control label { font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.signal__control--switch { grid-template-columns: auto 1fr; justify-content: start; }
+.signal__control--switch input { width: 18px; height: 18px; accent-color: var(--red); }
+.signal__dial { width: 100%; accent-color: var(--red-text); height: 28px; }
+.signal__dial-value { text-align: right; color: var(--bright); }
+.signal__key { grid-column: 2 / 4; max-width: 14rem; padding: 8px 12px; background: var(--void); border: 1px solid var(--line-strong); color: var(--bright); letter-spacing: 0.4em; text-transform: uppercase; caret-color: var(--red-text); }
+.signal__key:focus { outline: none; border-color: var(--bright); }
+.signal__buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+.signal__hints { display: grid; gap: 8px; color: var(--blue); }
+.signal__finale { font-family: var(--serif); font-style: italic; font-size: 1.4rem; color: var(--bright); animation: stage-in 1.4s var(--ease); }
+@media (max-width: 560px) {
+  .signal__control { grid-template-columns: 1fr 2.5rem; }
+  .signal__control label { grid-column: 1 / -1; }
+  .signal__key { grid-column: 1 / -1; }
+  .signal__meter-row { grid-template-columns: 1fr; gap: 6px; }
+}
+
+/* Room 003: The Infinite Hallway */
+.hall__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hall__hud { position: absolute; top: 72px; left: var(--gutter); max-width: min(24rem, calc(100vw - 2 * var(--gutter))); pointer-events: none; }
+.hall__level { margin-top: 14px; font-size: 0.6875rem; letter-spacing: 0.22em; color: var(--faint); }
+.hall__places { margin-top: 10px; display: grid; gap: 4px; font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+.hall__places .is-found { color: var(--red-text); }
+.hall__hints { margin-top: 12px; display: grid; gap: 6px; color: var(--blue); font-size: 0.75rem; }
+.hall__foot { position: absolute; left: 0; right: 0; bottom: var(--gutter); display: grid; justify-items: center; gap: 14px; padding: 0 var(--gutter); }
+.hall__whisper { min-height: 1.6em; max-width: 34rem; text-align: center; font-family: var(--serif); font-style: italic; font-size: clamp(1.1rem, 2.6vw, 1.5rem); color: var(--bright); text-shadow: 0 0 20px #000; }
+.hall__pads { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.hall__pad { padding: 10px 16px; background: rgba(5, 5, 6, 0.72); border: 1px solid var(--line-strong); color: var(--text); font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; transition: border-color 0.2s, color 0.2s; }
+.hall__pad:hover { border-color: var(--bright); color: var(--bright); }
+.hall__finale { max-width: 30rem; text-align: center; font-family: var(--serif); font-style: italic; font-size: 1.15rem; color: var(--red-text); text-shadow: 0 0 20px #000; animation: stage-in 1.6s var(--ease); }
+
+/* Room 004: Forgotten Coordinates */
+.map__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; outline: none; }
+.map__canvas:active { cursor: grabbing; }
+.map__canvas:focus-visible { outline: 1px solid var(--line-strong); outline-offset: -4px; }
+.map__hud { position: absolute; top: 72px; left: var(--gutter); max-width: min(26rem, calc(100vw - 2 * var(--gutter))); pointer-events: none; }
+.map__hud > * { pointer-events: none; }
+.map__readout { margin-top: 14px; font-size: 0.6875rem; letter-spacing: 0.12em; color: var(--blue); }
+.map__pieces { margin-top: 10px; display: flex; gap: 8px; }
+.map__pieces li { min-width: 4.2rem; padding: 4px 8px; border: 1px dashed var(--line-strong); text-align: center; color: var(--faint); letter-spacing: 0.1em; }
+.map__pieces .is-found { border-style: solid; border-color: var(--blue); color: var(--bright); }
+.map__info { margin-top: 14px; display: grid; gap: 4px; padding: 12px 14px; background: rgba(2, 3, 6, 0.8); border-left: 1px solid var(--blue); font-size: 0.75rem; color: var(--dim); max-width: 22rem; }
+.map__info-title { color: var(--bright); letter-spacing: 0.14em; text-transform: uppercase; }
+.map__info-line { color: var(--blue); }
+.map__info-clue { color: var(--red-text); }
+.map__info-empty { color: var(--faint); }
+.map__foot { position: absolute; left: var(--gutter); right: var(--gutter); bottom: var(--gutter); display: grid; gap: 10px; justify-items: start; pointer-events: none; }
+.map__foot > * { pointer-events: auto; }
+.map__form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.map__form label { font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.map__input { width: 11rem; padding: 8px 12px; background: rgba(2, 3, 6, 0.85); border: 1px solid var(--line-strong); color: var(--bright); caret-color: var(--blue); }
+.map__input:focus { outline: none; border-color: var(--blue); }
+.map__message { min-height: 1.5em; max-width: 36rem; color: var(--text); text-shadow: 0 0 12px #000; }
+.map__tools { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.map__catalogue { font-size: 0.75rem; color: var(--dim); }
+.map__catalogue summary { cursor: pointer; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.6875rem; }
+.map__catalogue ul { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; max-width: 30rem; padding: 10px 12px; background: rgba(2, 3, 6, 0.85); }
+.map__hints { display: grid; gap: 4px; color: var(--blue); font-size: 0.75rem; max-width: 36rem; background: rgba(2, 3, 6, 0.6); }
+@media (max-width: 640px) {
+  .map__info { position: static; }
+  .map__foot { bottom: 12px; }
+}

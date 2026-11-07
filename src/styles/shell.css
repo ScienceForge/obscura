@@ -35,7 +35,7 @@ body[data-view='room'] .stage { padding-top: 0; }
 
 /* Toasts */
 .toasts {
-  position: fixed; left: var(--gutter); bottom: var(--gutter); z-index: 200;
+  position: fixed; right: var(--gutter); top: 64px; z-index: 200;
   display: grid; gap: 10px; width: min(360px, calc(100vw - 2 * var(--gutter)));
   pointer-events: none;
 }
@@ -46,8 +46,8 @@ body[data-view='room'] .stage { padding-top: 0; }
   box-shadow: 0 0 0 1px var(--line);
   animation: toast-in 0.6s var(--ease);
 }
-.toast.is-leaving { opacity: 0; transform: translateX(-6px); transition: opacity 0.6s, transform 0.6s; }
+.toast.is-leaving { opacity: 0; transform: translateX(6px); transition: opacity 0.6s, transform 0.6s; }
 .toast__label { font-size: 0.625rem; letter-spacing: 0.24em; color: var(--red-text); }
 .toast__title { color: var(--bright); margin-top: 2px; }
 .toast__detail { color: var(--dim); margin-top: 2px; font-size: 0.75rem; }
-@keyframes toast-in { from { opacity: 0; transform: translateX(-10px); } }
+@keyframes toast-in { from { opacity: 0; transform: translateX(10px); } }
